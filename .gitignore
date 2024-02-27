@@ -1,0 +1,5 @@
+node_modules/
+public/audios/*.mp3
+public/images/*.png
+public/videos/*.mp4
+db.sqlite

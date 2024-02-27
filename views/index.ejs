@@ -1,0 +1,399 @@
+<html>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    </head>
+    <title>Video Kit using OpenAI</title>
+    <body>
+        <div class="container">
+        <h1 class="row d-flex justify-content-center">Creating Video From Images using OpenAI API</h1>
+        <hr/>
+        <div class="justify-content-center">
+            <div style="width:60%;float:left">
+            <form method="POST" action="/changeSettings">
+                <h4>Open AI Key</h4>
+                <input type="password" name="openai_key" style="width: 400px" value="<%=openai_key%>">
+                <button type="submit" class="btn btn-primary">Update Key</button>
+            </form>
+            </div>
+            <div>
+                <form method="POST" action="/resetFormInfo" style="float:left;margin-top:20px;margin-right:10px">
+                    <input type="hidden" name="formInfo" value="data">
+                    <button type="submit" class="btn btn-primary">Reset Data and Logs</button>
+                </form>
+                <form method="POST" action="/resetFormInfo" >
+                    <input type="hidden" name="formInfo" value="logs">
+                    <button type="submit" style="margin-top:20px;" class="btn btn-primary">Reset Logs Only</button>
+                </form>
+            </div>
+        </div>
+        <br/><br/>
+        
+        <div style="clear:both"></div>
+        <br/><br/>
+        <h4> Generating Text Sentences</h4>
+
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Text Prompts</button>
+              <button class="nav-link" id="nav-logs-tab" data-bs-toggle="tab" data-bs-target="#nav-logs" type="button" role="tab" aria-controls="nav-logs" aria-selected="false">Logs</button>
+            </div>
+        </nav>
+        <div class="tab-content shadow p-3 mb-5 bg-white rounded" id="nav-tabContent" style="min-height: 655px;padding:5px;">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div>
+                    <form method="POST" id="textPromptForm" action="/chatCompletionRequest">
+                        <div class="form-group">
+                        <label>Assistant Data</label>
+                        <textarea class="form-control" cols="100" rows="5" name="textPromptAssistant"><%=textPromptAssistant%></textarea><br/><br/>
+                        </div>
+                        <div class="form-group">
+                        <label>Main Input</label>
+                        <textarea class="form-control" cols="100" rows="5" name="textPromptInput" ><%=textPromptInput%></textarea><br/><br/>
+                        </div>
+                        <div class="form-group">
+                        <label>Main Result</label>
+                        <textarea class="form-control"  cols="100" rows="5" id="latestTextPromptResult" name="textPromptResult"><%=textPromptResult%></textarea><br/><br/>
+                        <div style="text-align:center">
+                            <button id="textPromptSubmitButton" class="btn btn-primary">Let's go!</button>
+                        </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-logs" role="tabpanel" aria-labelledby="nav-logs-tab">
+                <textarea id="textPromptLogs" class="form-control" style="width:100%;height:655px" readonly></textarea>
+            </div>
+        </div>
+        
+        
+        <br/><br/>
+
+       
+        <h3>Generating Audio from Text Prompt Results:</h3>
+
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home2" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Audio Sentence</button>
+              <button class="nav-link" id="nav-logs-tab" data-bs-toggle="tab" data-bs-target="#nav-logs2" type="button" role="tab" aria-controls="nav-logs" aria-selected="false">Logs</button>
+            </div>
+        </nav>
+        <div class="tab-content shadow p-3 mb-5 bg-white rounded" id="nav-tabContent" style="min-height: 655px;padding:5px;">
+            <div class="tab-pane fade show active" id="nav-home2" role="tabpanel" aria-labelledby="nav-home-tab">
+                <div>
+                    <table id="audioTable" class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                              <th scope="col">Sentence</th>
+                              <th scope="col">Play</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                        <% for(var i=0;i < audioObjs.length;i++) {%>
+                            <tr>
+                                <td><%=audioObjs[i].sentence%></td>
+                                <td><audio controls src="<%=audioObjs[i].audio%>"></audio></td>
+                            </tr>
+                        <% }%>
+                        </tbody>
+                    </table>
+                    <div style="text-align:center">
+                    <form method="POST"  id="audioForm" action="/chatGenerateAudio">
+                        <input type="hidden" id="audioInput" name="audioInput">
+                        <button type="submit" class="btn btn-primary">Generate Audio from latest Text Prompt</button>
+                    </form>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-logs2" role="tabpanel" aria-labelledby="nav-logs-tab">
+                <textarea id="audioLogs" class="form-control" style="width:100%;height:655px" readonly></textarea>
+            </div>
+        </div>
+
+
+        <br/><br/>
+
+        
+        <h3>Generating Images for Each Sentence:</h3>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home3" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Images</button>
+              <button class="nav-link" id="nav-logs-tab" data-bs-toggle="tab" data-bs-target="#nav-logs3" type="button" role="tab" aria-controls="nav-logs" aria-selected="false">Logs</button>
+            </div>
+        </nav>
+        <div class="tab-content shadow p-3 mb-5 bg-white rounded" id="nav-tabContent" style="min-height: 655px;padding:5px;">
+            <div class="tab-pane fade show active" id="nav-home3" role="tabpanel" aria-labelledby="nav-home-tab">
+                <table id="imageTable" class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                          <th scope="col">Sentence</th>
+                          <th scope="col">Image</th>
+                        </tr>
+                      </thead>      
+                      <tbody>      
+                      <% for(var i=0;i < imageObjs.length;i++) {%>
+                        <tr>
+                            <td><%=imageObjs[i].sentence%></td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td><img style="width:400px" src="/images/<%=imageObjs[i].imageFile%>" alt="<%=imageObjs[i].revisedPrompt%>"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span style="font-size:10px">Prompt: <%=imageObjs[i].prompt%></span></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    <% }%>
+                </tbody>
+                </table>
+                <div style="text-align:center">
+                <form method="POST" id="imageForm" action="/chatGenerateImage">
+                    <button type="submit" class="btn btn-primary">Generate Images from latest Audios</button>
+                </form>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-logs3" role="tabpanel" aria-labelledby="nav-logs-tab">
+                <textarea id="imageLogs" class="form-control" style="width:100%;height:655px" readonly></textarea>
+            </div>
+        </div>
+
+        
+        <br/><br/>
+      
+
+        <h3 style="text-align: center;">Generating Final Video:</h3>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home4" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Video Result</button>
+              <button class="nav-link" id="nav-logs-tab" data-bs-toggle="tab" data-bs-target="#nav-logs4" type="button" role="tab" aria-controls="nav-logs" aria-selected="false">Logs</button>
+            </div>
+        </nav>
+        <div class="tab-content shadow p-3 mb-5 bg-white rounded" id="nav-tabContent" style="min-height: 655px;padding:5px;">
+            <div class="tab-pane fade show active" id="nav-home4" role="tabpanel" aria-labelledby="nav-home-tab">
+                <table id="videoTable" class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                          <th scope="col">Video</th>
+                        </tr>
+                      </thead>       
+                      <tbody>
+                    <% for(var i=0;i < videoObjs.length;i++) {%>
+                        <tr>
+                            <td><video controls src="<%=videoObjs[i].video%>"></video></td>
+                        </tr>
+                    <% }%>
+                    </tbody>
+                </table>
+                <div style="text-align:center">
+                    <form method="POST" id="videoForm" action="/chatGenerateVideo">
+                        <button type="submit" class="btn btn-primary">Generate Video</button>
+                    </form>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-logs4" role="tabpanel" aria-labelledby="nav-logs-tab">
+                <textarea id="videoLogs" class="form-control" style="width:100%;height:655px" readonly></textarea>
+            </div>
+        </div>
+
+      
+
+    </div> <!-- Closing Container-->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script
+        src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
+    <!-- CLICK EVENTS-->
+    <script type="text/javascript">
+        function setAudioLastPromptResult()
+        {
+            var lastResult = document.getElementById('latestTextPromptResult').value
+            document.getElementById('audioInput').value = lastResult
+        }
+    </script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+
+        //SUBMIT TEXT PROMPT
+        $("#textPromptForm").submit(
+        function (event)
+        { 
+            var $inputList = $("#textPromptForm :input")
+            var inputValues = {}
+            $inputList.each(function() {
+                inputValues[this.name] = $(this).val();
+            });
+            const refreshLogsInterval = setInterval(refreshTextPromptLogs,1000)
+
+            $.ajax({
+            type: "POST",
+            url: "/chatCompletionRequest",
+            data: inputValues,
+            dataType: "json",
+            encode: true,
+            }).done(function (data) {
+                clearInterval(refreshLogsInterval)
+                refreshTextPromptLogs()
+                $("#latestTextPromptResult").val(data.textPromptResult)
+            });
+            event.preventDefault();
+        });
+
+        //GENERATE AUDIO
+        $("#audioForm").submit(
+        function (event)
+        { 
+            setAudioLastPromptResult()
+            var $inputList = $("#audioForm :input")
+            var inputValues = {}
+            $inputList.each(function() {
+                inputValues[this.name] = $(this).val();
+            });
+            console.log('Input Values:')
+            console.log(inputValues)
+            const refreshLogsInterval = setInterval(refreshAudioLogs,1000)
+            $("#audioTable tbody").empty();
+
+            $.ajax({
+            type: "POST",
+            url: "/chatGenerateAudio",
+            data: inputValues,
+            dataType: "json",
+            encode: true,
+            }).done(function (data) {
+                clearInterval(refreshLogsInterval)
+                refreshAudioLogs()
+                if(typeof data.message !== 'undefined')
+                    $('#audioTable tbody').append('<tr><td colspan="2">An error occurred</td></tr>');
+                else
+                {
+                //Populate AudioTable
+                for(var cItem=0; cItem < data.length;cItem++)
+                $('#audioTable tbody').append('<tr><td>'+data[cItem].sentence+'</td><td><audio controls src="'+data[cItem].audio+'"></audio></td></tr>');
+                console.log(data)
+                }
+            });
+            event.preventDefault();
+        });
+
+        //GENERATE IMAGES
+        $("#imageForm").submit(
+        function (event)
+        { 
+            const refreshLogsInterval = setInterval(refreshImageLogs,1000)
+            $("#imageTable tbody").empty();
+
+            $.ajax({
+            type: "POST",
+            url: "/chatGenerateImage",
+            data: {},
+            dataType: "json",
+            encode: true,
+            }).done(function (data) {
+                clearInterval(refreshLogsInterval)
+                refreshImageLogs()
+                if(typeof data.message !== 'undefined')
+                    $('#imageTable tbody').append('<tr><td colspan="2">An error occurred</td></tr>');
+                else
+                {
+                //Populate AudioTable
+                for(var cItem=0; cItem < data.length;cItem++)
+                $('#imageTable tbody').append('<tr><td>'+data[cItem].sentence+'</td><td><img style="width:400px" src="/images/'+data[cItem].imageFile+'"><br/><span style="font-size:10px">'+data[cItem].prompt+'</span></td></tr>');
+                console.log(data)
+                }
+            });
+            event.preventDefault();
+        });
+
+          //GENERATE VIDEOS
+          $("#videoForm").submit(
+        function (event)
+        { 
+            const refreshLogsInterval = setInterval(refreshVideoLogs,1000)
+            $("#videoTable tbody").empty();
+
+            $.ajax({
+            type: "POST",
+            url: "/chatGenerateVideo",
+            data: {},
+            dataType: "json",
+            encode: true,
+            }).done(function (data) {
+                clearInterval(refreshLogsInterval)
+                refreshVideoLogs()
+                if(typeof data.message !== 'undefined')
+                    $('#videoTable tbody').append('<tr><td>An error occurred</td></tr>');
+                else
+                {
+                //Populate VideoTable
+                $('#videoTable tbody').append('<tr><td><video controls src="'+data[0].video+'"></video></td></tr>');
+                console.log(data)
+                }
+            });
+            event.preventDefault();
+        });
+
+
+    });
+
+    function refreshTextPromptLogs()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/getLogs/textPrompt",
+            dataType: "json",
+            encode: true,
+            }).done(function (data) {
+                console.log(data)
+                $("#textPromptLogs").val(data.result)
+            });
+            
+    }
+
+    function refreshAudioLogs()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/getLogs/audio",
+            dataType: "json",
+            encode: true,
+            }).done(function (data) {
+                console.log(data)
+                $("#audioLogs").val(data.result)
+            });
+            
+    }
+
+    function refreshImageLogs()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/getLogs/image",
+            dataType: "json",
+            encode: true,
+            }).done(function (data) {
+                console.log(data)
+                $("#imageLogs").val(data.result)
+            });
+            
+    }
+
+    function refreshVideoLogs()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/getLogs/video",
+            dataType: "json",
+            encode: true,
+            }).done(function (data) {
+                console.log(data)
+                $("#videoLogs").val(data.result)
+            });
+            
+    }
+    </script>
+
+</body>
+</html>
