@@ -43,10 +43,37 @@ node index.js
 ```
 
 # Get Started!
+
 Once the server is started, open your browser and access the URL:
 ```
 http://localhost:3000
 ```
+
+- Enter your OpenAI Key on top of the page and press submit. Don't have a key yet? You can create it here: [OpenAI - API Keys](https://platform.openai.com/account/api-keys)
+
+![Screenshot of header of the webpage. Input of OpenAI Key and buttons to reset data/logs.](https://raw.githubusercontent.com/dineubr/videofromimages_openai/main/docs/000_openaikey.png)
+
+- Next, you will need to fill the inputs *Assistant Data* and *Main Input*. Be creative! Don't know how to start? Check out the example in the image below:
+
+![Screenshot of Text Prompts input. In the example we ask AI to briefly explain how to replace a flat tire.](https://raw.githubusercontent.com/dineubr/videofromimages_openai/main/docs/010_generatingtextsentences.png)
+
+- Once you have the result on the third text-box *"Main Result"*, feel free to change the text box directly and get ready to create the audios for each sentence by pressing *"Generate Audio Files from Latest Text Prompt"*
+
+![The screenshot shows the results of the audio files generated once the user pressed the button "Generate Audio Files from Latest Text Prompt" .](https://raw.githubusercontent.com/dineubr/videofromimages_openai/main/docs/020_generatingaudiofiles.png)
+
+- Once the audio files are ready, you can now move one more step and click on *"Generate Images from latest Audios"*. This step will take a bit longer than the previous ones. You can follow the processing info checking the tab **"Logs"**
+
+![The screenshot shows the section where we generate images as a result from latest audios generated on previous steps.](https://raw.githubusercontent.com/dineubr/videofromimages_openai/main/docs/030_generatingimages.png)
+
+- Finally, once all the images are generated, its time to click on *"Generate Video"*. This step may also require a bit of waiting. Again, feel free to follow the process info checking the tab **"Logs"**
+
+![The screenshot shows the very last part where we can generate the video as a result from previous steps.](https://raw.githubusercontent.com/dineubr/videofromimages_openai/main/docs/040_generatingvideo.png)
+
+## Sample Result
+
+Here is the result based on the previous screenshots:
+
+[Sample Video - Replacing a Flat Tire](https://raw.githubusercontent.com/dineubr/videofromimages_openai/main/docs/sample_video.mp4)
 
 # Contribute
 Feel free to reach out if you have any questions and/or suggestions regarding this project.
