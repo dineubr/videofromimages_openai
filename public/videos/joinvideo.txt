@@ -1,4 +1,5 @@
 #List of files to be joined
-file C:\\Projects\\openai-videokit\\public\\videos\\jlf2Y9Clyn.mp4
-file C:\\Projects\\openai-videokit\\public\\videos\\prGP0EqrHB.mp4
-file C:\\Projects\\openai-videokit\\public\\videos\\4WflE8OMId.mp4
+file C:\\Projects\\videofromimages_openai\\public\\videos\\QTQbg77htA.mp4
+file C:\\Projects\\videofromimages_openai\\public\\videos\\iLmBoZLCWf.mp4
+file C:\\Projects\\videofromimages_openai\\public\\videos\\lJ0YZ6FHwf.mp4
+file C:\\Projects\\videofromimages_openai\\public\\videos\\YdgYslRBr0.mp4
