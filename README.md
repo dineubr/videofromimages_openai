@@ -12,7 +12,7 @@ All we need is a good text prompt!
 # Requirements
 In order to use this project the following software will be required:
 
-1. Install Git - ([https://pages.github.com/](https://git-scm.com/downloads)).
+1. Install Git - (https://git-scm.com/downloads).
 2. Install NodeJS -  (https://nodejs.org/en/download)
 3. Install FFMpeg -  [Official Website](https://ffmpeg.org/download.html#build-windows), Alternatively you can download [FFMpeg Windows Builds](https://www.gyan.dev/ffmpeg/builds/#release-builds)
 
